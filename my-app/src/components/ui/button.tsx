@@ -1,31 +1,17 @@
 import React from 'react';
 import { clsx } from 'clsx';
 
-type ButtonVariant = 'yellow' | 'green' | 'pink' | 'cyan' | 'orange' | 'white' | 'black';
-type ButtonSize = 'sm' | 'md' | 'lg';
-
-type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-  children: React.ReactNode;
-  className?: string;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  loading?: boolean;
-};
-
-export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  {
-    children,
-    className,
-    variant = 'yellow',
-    size = 'md',
-    loading = false,
-    disabled,
-    type = 'button',
-    ...props
-  },
-  ref
-) {
-  const variantClasses: Record<ButtonVariant, string> = {
+export function Button({
+  children,
+  className,
+  variant = 'yellow',
+  size = 'md',
+  loading = false,
+  disabled,
+  type = 'button',
+  ...props
+}) {
+  const variantClasses = {
     yellow: 'bg-neo-yellow text-black hover:bg-yellow-300',
     green: 'bg-neo-green text-black hover:bg-emerald-400',
     pink: 'bg-neo-pink text-black hover:bg-pink-400',
@@ -35,7 +21,7 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
     black: 'bg-black text-white hover:bg-zinc-800',
   };
 
-  const sizeClasses: Record<ButtonSize, string> = {
+  const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-5 py-2.5 text-base font-bold',
     lg: 'px-8 py-4 text-lg font-black',
@@ -43,7 +29,6 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
 
   return (
     <button
-      ref={ref}
       type={type}
       disabled={disabled || loading}
       className={clsx(
@@ -87,6 +72,4 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function 
       )}
     </button>
   );
-});
-
-Button.displayName = 'Button';
+}

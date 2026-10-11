@@ -1,28 +1,13 @@
 import React from 'react';
 import { clsx } from 'clsx';
 
-type BadgeVariant =
-  | 'neo-yellow'
-  | 'neo-green'
-  | 'neo-pink'
-  | 'neo-cyan'
-  | 'neo-orange'
-  | 'yellow'
-  | 'green'
-  | 'pink'
-  | 'cyan'
-  | 'orange'
-  | 'white'
-  | 'black';
-
-type BadgeProps = React.HTMLAttributes<HTMLSpanElement> & {
-  children: React.ReactNode;
-  className?: string;
-  variant?: BadgeVariant;
-};
-
-export function Badge({ children, className, variant = 'white', ...props }: BadgeProps) {
-  const variantClasses: Record<BadgeVariant, string> = {
+export function Badge({
+  children,
+  className,
+  variant = 'white',
+  ...props
+}) {
+  const variantClasses = {
     'neo-yellow': 'bg-neo-yellow text-black',
     'neo-green': 'bg-neo-green text-black',
     'neo-pink': 'bg-neo-pink text-black',
