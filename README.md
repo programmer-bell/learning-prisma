@@ -1,39 +1,76 @@
-# Learning-Prisma
-Hands-on Prima learning project for a backend JavaScript developer. Focused on building fundamentals through practical coding, leveraging AI as a guide—not a shortcut—to develop real understanding, problem-solving skills, and architectural thinking rather than just writing code.
+# Learning Prisma
 
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+This project is a hands-on learning repository focused on understanding Prisma and building practical backend development skills with JavaScript and TypeScript. It is designed to help explore real-world concepts such as database modeling, schema design, migrations, querying, and integrating a database into a modern web application.
+
+The goal of this project is not just to write code, but to build a deeper understanding of how data flows in an application and how professional backend systems are structured. This repository is meant to support learning through practice, experimentation, and continuous improvement.
+
+## Project Overview
+
+This is a [Next.js](https://nextjs.org) application that serves as a learning environment for Prisma-based development. While the project uses a modern frontend stack, the main focus is on learning how to work with Prisma effectively, from setup to schema definition and database operations.
+
+## Why this project exists
+
+- To practice Prisma fundamentals in a real project
+- To understand relational database design and modeling
+- To explore CRUD operations and query patterns
+- To gain confidence working with migrations and database workflows
+- To improve backend thinking, problem-solving, and architecture skills
+
+## Tech Stack
+
+- [Next.js](https://nextjs.org)
+- [React](https://react.dev)
+- [TypeScript](https://www.typescriptlang.org)
+- [Prisma](https://www.prisma.io)
+- A Prisma-compatible database such as PostgreSQL, MySQL, or SQLite
+
+## Learning Goals
+
+This repository is intended to help with learning and practicing:
+
+- Prisma schema creation
+- Database migrations
+- Querying and data manipulation with Prisma Client
+- Relationships between models
+- Environment configuration for database connections
+- Clean project organization and developer workflow
 
 ## Getting Started
 
-First, run the development server:
+1. Install project dependencies:
+
+```bash
+npm install
+```
+
+2. Configure your database connection in the environment file:
+
+```bash
+DATABASE_URL="your_database_connection_string"
+```
+
+3. Initialize Prisma if needed:
+
+```bash
+npx prisma init
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open the app in your browser at:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```text
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Project Notes
 
-## Learn More
+This repository is a learning project created to strengthen practical understanding of Prisma and modern application development. The focus is on building real knowledge and improving developer skills through hands-on work, rather than relying on shortcuts or copying code without understanding it.
 
-To learn more about Next.js, take a look at the following resources:
+## Summary
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Learning Prisma is a simple but meaningful project meant to support growth as a developer. It combines practical coding with a clear learning purpose and encourages thoughtful, structured development habits.
