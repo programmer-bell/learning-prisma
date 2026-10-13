@@ -7,6 +7,7 @@ import { getCurrentUser, logoutUser } from '@/app/actions/auth';
 import { getNotes, getTags } from '@/app/actions/notes';
 import { SearchBar } from '@/components/search-bar';
 import { DeleteButton } from '@/components/delete-button';
+import type { NoteFilters } from '@/lib/note-query';
 import { 
   LogOut, 
   Plus, 
@@ -20,23 +21,36 @@ import {
   Pencil 
 } from 'lucide-react';
 
-export default async function DashboardPage(props) {
+function dashboardHref(filters: { search?: string; tag?: string }) {
+  const params = new URLSearchParams();
+  if (filters.search) params.set('search', filters.search);
+  if (filters.tag) params.set('tag', filters.tag);
+  const query = params.toString();
+  return query ? `/dashboard?${query}` : '/dashboard';
+}
+
+type DashboardPageProps = {
+  searchParams: Promise<{ search?: string | string[]; tag?: string | string[] }>;
+};
+
+export default async function DashboardPage({ searchParams }: DashboardPageProps) {
   const user = await getCurrentUser();
   if (!user) {
     redirect('/login');
   }
 
-  const searchParams = await props.searchParams;
-  const search = searchParams.search;
-  const tag = searchParams.tag;
+  const params = await searchParams;
+  const search = typeof params.search === 'string' ? params.search : '';
+  const tag = typeof params.tag === 'string' ? params.tag : '';
 
   // Fetch Tags and Notes from Server Actions
   const tags = await getTags();
-  const notes = await getNotes({ search, tag });
+  const filters: NoteFilters = { search, tag };
+  const notes = await getNotes(filters);
   const allUserNotes = await getNotes(); // Used for total count and tag counts
 
   // Pre-calculate note counts for tags in parent scope to avoid inline awaits in loops
-  const tagCounts = {};
+  const tagCounts: Record<string, number> = {};
   for (const t of tags || []) {
     tagCounts[t?.name] = (allUserNotes || []).filter((n) =>
       (n?.tags || []).some((nt) => nt?.name?.toLowerCase() === t?.name?.toLowerCase())
@@ -108,7 +122,7 @@ export default async function DashboardPage(props) {
                 return (
                   <Link
                     key={t.id}
-                    href={isActive ? '/dashboard' : `/dashboard?tag=${t.name}${search ? `&search=${search}` : ''}`}
+                    href={dashboardHref({ tag: isActive ? undefined : t.name, search })}
                     className={`flex items-center justify-between p-2.5 border-2 border-black font-bold text-sm transition-all shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[-1px] hover:translate-y-[-1px] hover:shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] active:translate-x-[1px] active:translate-y-[1px] active:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] cursor-pointer ${
                       isActive 
                         ? t.color === 'neo-yellow' ? 'bg-neo-yellow text-black' :
@@ -146,7 +160,7 @@ export default async function DashboardPage(props) {
       <main className="flex-1 p-6 md:p-10 flex flex-col gap-6 bg-neo-bg">
         {/* TOP BAR / SEARCH */}
         <div className="flex flex-col md:flex-row gap-4 justify-between items-stretch">
-          <SearchBar defaultValue={search || ''} />
+          <SearchBar key={search} defaultValue={search} />
         </div>
 
         {/* ACTIVE FILTERS CHIPS */}
@@ -155,14 +169,14 @@ export default async function DashboardPage(props) {
             <span className="text-xs font-black uppercase text-zinc-500">Active Filters:</span>
             {search && (
               <Badge variant="neo-yellow" className="flex items-center gap-1.5">
-                Search: "{search}"
-                <Link href={`/dashboard${tag ? `?tag=${tag}` : ''}`} className="font-bold hover:text-red-500 ml-1 cursor-pointer">×</Link>
+                Search: &quot;{search}&quot;
+                <Link href={dashboardHref({ tag })} className="font-bold hover:text-red-500 ml-1 cursor-pointer">×</Link>
               </Badge>
             )}
             {tag && (
               <Badge variant="neo-pink" className="flex items-center gap-1.5">
                 Tag: #{tag}
-                <Link href={`/dashboard${search ? `?search=${search}` : ''}`} className="font-bold hover:text-red-500 ml-1 cursor-pointer">×</Link>
+                <Link href={dashboardHref({ search })} className="font-bold hover:text-red-500 ml-1 cursor-pointer">×</Link>
               </Badge>
             )}
             <Link href="/dashboard" className="text-xs font-black uppercase underline hover:text-neo-pink ml-2 cursor-pointer">

@@ -43,7 +43,7 @@ export function NoteForm({ initialNote, allTags }: NoteFormProps) {
   return (
     <form action={formAction} className="flex flex-col gap-6">
       {state?.error && (
-        <div className="bg-neo-pink border-4 border-black p-3 font-bold text-sm shadow-neo-sm flex items-center gap-2">
+        <div role="alert" aria-live="polite" className="bg-neo-pink border-4 border-black p-3 font-bold text-sm shadow-neo-sm flex items-center gap-2">
           <AlertCircle className="h-5 w-5 text-black shrink-0 stroke-[3]" />
           <span>{state.error}</span>
         </div>
@@ -54,6 +54,7 @@ export function NoteForm({ initialNote, allTags }: NoteFormProps) {
         name="title"
         placeholder="e.g. Configure Prisma ORM with PostgreSQL"
         required
+        maxLength={160}
         defaultValue={initialNote?.title || ''}
       />
 
@@ -63,6 +64,7 @@ export function NoteForm({ initialNote, allTags }: NoteFormProps) {
         placeholder="Write your developer notes or logs here..."
         rows={8}
         required
+        maxLength={20000}
         defaultValue={initialNote?.content || ''}
       />
 

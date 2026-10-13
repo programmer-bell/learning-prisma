@@ -1,12 +1,17 @@
-import React from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { clsx } from 'clsx';
+
+type BadgeProps = HTMLAttributes<HTMLSpanElement> & {
+  children: ReactNode;
+  variant?: string;
+};
 
 export function Badge({
   children,
   className,
   variant = 'white',
   ...props
-}) {
+}: BadgeProps) {
   const variantClasses = {
     'neo-yellow': 'bg-neo-yellow text-black',
     'neo-green': 'bg-neo-green text-black',
@@ -22,7 +27,7 @@ export function Badge({
     black: 'bg-black text-white',
   };
 
-  const selectedClass = variantClasses[variant] || 'bg-white text-black';
+  const selectedClass = (variantClasses as Record<string, string>)[variant] || 'bg-white text-black';
 
   return (
     <span

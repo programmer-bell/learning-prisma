@@ -1,76 +1,43 @@
 # Learning Prisma
 
-This project is a hands-on learning repository focused on understanding Prisma and building practical backend development skills with JavaScript and TypeScript. It is designed to help explore real-world concepts such as database modeling, schema design, migrations, querying, and integrating a database into a modern web application.
+A Next.js developer notebook for learning relational data modeling and Prisma through account registration, protected note management, tags, and URL-driven search. The application lives in [`my-app/`](my-app/).
 
-The goal of this project is not just to write code, but to build a deeper understanding of how data flows in an application and how professional backend systems are structured. This repository is meant to support learning through practice, experimentation, and continuous improvement.
+## Stack
 
-## Project Overview
+- Next.js App Router, React, and TypeScript
+- Prisma ORM 6 with SQLite for local development
+- Tailwind CSS 4
+- Node's `scrypt` for password hashing and database-backed opaque sessions
 
-This is a [Next.js](https://nextjs.org) application that serves as a learning environment for Prisma-based development. While the project uses a modern frontend stack, the main focus is on learning how to work with Prisma effectively, from setup to schema definition and database operations.
-
-## Why this project exists
-
-- To practice Prisma fundamentals in a real project
-- To understand relational database design and modeling
-- To explore CRUD operations and query patterns
-- To gain confidence working with migrations and database workflows
-- To improve backend thinking, problem-solving, and architecture skills
-
-## Tech Stack
-
-- [Next.js](https://nextjs.org)
-- [React](https://react.dev)
-- [TypeScript](https://www.typescriptlang.org)
-- [Prisma](https://www.prisma.io)
-- A Prisma-compatible database such as PostgreSQL, MySQL, or SQLite
-
-## Learning Goals
-
-This repository is intended to help with learning and practicing:
-
-- Prisma schema creation
-- Database migrations
-- Querying and data manipulation with Prisma Client
-- Relationships between models
-- Environment configuration for database connections
-- Clean project organization and developer workflow
-
-## Getting Started
-
-1. Install project dependencies:
+## Run Locally
 
 ```bash
-npm install
-```
-
-2. Configure your database connection in the environment file:
-
-```bash
-DATABASE_URL="your_database_connection_string"
-```
-
-3. Initialize Prisma if needed:
-
-```bash
-npx prisma init
-```
-
-4. Start the development server:
-
-```bash
+cd my-app
+cp .env.example .env
+npm ci
+npm run db:migrate
+npm run db:seed
 npm run dev
 ```
 
-5. Open the app in your browser at:
+Open <http://localhost:3000>. The example database URL creates `prisma/dev.db`. The seed command creates the shared note tags; it does not create a demo account. Register through the application to create a user.
 
-```text
-http://localhost:3000
+## Database Commands
+
+- `npm run db:generate` generates the Prisma Client.
+- `npm run db:migrate` creates/applies development migrations.
+- `npx prisma migrate deploy` applies committed migrations in deployment environments.
+- `npm run db:seed` creates or updates the default shared tags.
+
+Set `DATABASE_URL` in `.env` to use another Prisma-supported SQLite location. For another provider, update the Prisma datasource, migration, and connection URL together.
+
+## Verification
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run build
 ```
 
-## Project Notes
-
-This repository is a learning project created to strengthen practical understanding of Prisma and modern application development. The focus is on building real knowledge and improving developer skills through hands-on work, rather than relying on shortcuts or copying code without understanding it.
-
-## Summary
-
-Learning Prisma is a simple but meaningful project meant to support growth as a developer. It combines practical coding with a clear learning purpose and encourages thoughtful, structured development habits.
+The test script applies the committed migrations to `prisma/test.db` and runs unit and SQLite integration tests. Database files are ignored by Git.

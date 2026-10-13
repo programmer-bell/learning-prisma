@@ -1,18 +1,33 @@
-import React from 'react';
+import { forwardRef, useId, type TextareaHTMLAttributes } from 'react';
 import { clsx } from 'clsx';
 
-export const TextArea = React.forwardRef(
-  ({ className, label, error, rows = 5, ...props }, ref) => {
+type TextAreaProps = TextareaHTMLAttributes<HTMLTextAreaElement> & {
+  label?: string;
+  error?: string;
+};
+
+export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
+  { className, label, error, rows = 5, id, 'aria-describedby': describedBy, ...props },
+  ref
+) {
+    const generatedId = useId();
+    const inputId = id ?? generatedId;
+    const errorId = error ? `${inputId}-error` : undefined;
+    const accessibleDescription = [describedBy, errorId].filter(Boolean).join(' ') || undefined;
+
     return (
       <div className="w-full flex flex-col gap-2">
         {label && (
-          <label className="text-sm font-black uppercase tracking-wide text-black">
+          <label htmlFor={inputId} className="text-sm font-black uppercase tracking-wide text-black">
             {label}
           </label>
         )}
         <textarea
+          id={inputId}
           ref={ref}
           rows={rows}
+          aria-invalid={error ? true : undefined}
+          aria-describedby={accessibleDescription}
           className={clsx(
             'w-full border-4 border-black bg-white p-3 font-bold text-black outline-none transition-all duration-75 resize-y',
             'shadow-neo-sm focus:shadow-neo-md focus:translate-x-[-2px] focus:translate-y-[-2px]',
@@ -24,13 +39,12 @@ export const TextArea = React.forwardRef(
           {...props}
         />
         {error && (
-          <span className="text-xs font-black uppercase text-red-600 bg-red-100 border border-red-500 px-2 py-0.5 self-start shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
+          <span id={errorId} role="alert" className="text-xs font-black uppercase text-red-600 bg-red-100 border border-red-500 px-2 py-0.5 self-start shadow-[1px_1px_0px_0px_rgba(0,0,0,1)]">
             {error}
           </span>
         )}
       </div>
     );
-  }
-);
+});
 
 TextArea.displayName = 'TextArea';

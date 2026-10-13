@@ -30,7 +30,7 @@ export default async function LoginPage() {
           <LoginForm />
 
           <div className="text-center font-bold text-sm border-t-4 border-black pt-4">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/register" className="underline hover:text-neo-pink">
               Sign up free
             </Link>

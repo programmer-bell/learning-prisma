@@ -12,7 +12,7 @@ export function RegisterForm() {
   return (
     <form action={formAction} className="flex flex-col gap-4">
       {state?.error && (
-        <div className="bg-neo-pink border-4 border-black p-3 font-bold text-sm shadow-neo-sm flex items-center gap-2">
+        <div role="alert" aria-live="polite" className="bg-neo-pink border-4 border-black p-3 font-bold text-sm shadow-neo-sm flex items-center gap-2">
           <AlertCircle className="h-5 w-5 text-black shrink-0 stroke-[3]" />
           <span>{state.error}</span>
         </div>
@@ -23,6 +23,9 @@ export function RegisterForm() {
         name="name"
         placeholder="e.g. Sumit Saha"
         required
+        minLength={2}
+        maxLength={80}
+        autoComplete="name"
       />
 
       <Input
@@ -31,6 +34,8 @@ export function RegisterForm() {
         type="email"
         placeholder="e.g. sumit@learnwithsumit.com"
         required
+        maxLength={254}
+        autoComplete="email"
       />
 
       <Input
@@ -39,6 +44,9 @@ export function RegisterForm() {
         type="password"
         placeholder="••••••••"
         required
+        minLength={12}
+        maxLength={128}
+        autoComplete="new-password"
       />
 
       <Button type="submit" variant="pink" className="w-full mt-2" loading={isPending}>

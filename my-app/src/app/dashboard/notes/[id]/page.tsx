@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { redirect } from 'next/navigation';
+import { notFound, redirect } from 'next/navigation';
 import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -8,21 +8,21 @@ import { getNoteById } from '@/app/actions/notes';
 import { DeleteButton } from '@/components/delete-button';
 import { ArrowLeft, Pencil, Calendar } from 'lucide-react';
 
-export default async function NoteDetailsPage(props) {
+type NoteDetailsPageProps = {
+  params: Promise<{ id: string }>;
+};
+
+export default async function NoteDetailsPage({ params }: NoteDetailsPageProps) {
   const user = await getCurrentUser();
   if (!user) {
     redirect('/login');
   }
 
-  const params = await props.params;
-  const id = params.id;
+  const { id } = await params;
 
   const note = await getNoteById(id);
 
-  // Protect route if note does not exist or does not belong to logged-in user
-  if (!note || note.userId !== user.id) {
-    redirect('/dashboard');
-  }
+  if (!note) notFound();
 
   return (
     <div className="flex-1 flex flex-col items-center justify-center p-6 bg-neo-bg">

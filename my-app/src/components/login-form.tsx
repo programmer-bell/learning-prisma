@@ -12,7 +12,7 @@ export function LoginForm() {
   return (
     <form action={formAction} className="flex flex-col gap-4">
       {state?.error && (
-        <div className="bg-neo-pink border-4 border-black p-3 font-bold text-sm shadow-neo-sm flex items-center gap-2">
+        <div role="alert" aria-live="polite" className="bg-neo-pink border-4 border-black p-3 font-bold text-sm shadow-neo-sm flex items-center gap-2">
           <AlertCircle className="h-5 w-5 text-black shrink-0 stroke-[3]" />
           <span>{state.error}</span>
         </div>
@@ -24,7 +24,7 @@ export function LoginForm() {
         type="email"
         placeholder="e.g. sumit@learnwithsumit.com"
         required
-        defaultValue="sumit@learnwithsumit.com"
+        autoComplete="email"
       />
 
       <Input
@@ -33,7 +33,7 @@ export function LoginForm() {
         type="password"
         placeholder="••••••••"
         required
-        defaultValue="password123"
+        autoComplete="current-password"
       />
 
       <Button type="submit" variant="yellow" className="w-full mt-2" loading={isPending}>

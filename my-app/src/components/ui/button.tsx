@@ -1,5 +1,15 @@
-import React from 'react';
+import type { ButtonHTMLAttributes, ReactNode } from 'react';
 import { clsx } from 'clsx';
+
+type ButtonVariant = 'yellow' | 'green' | 'pink' | 'cyan' | 'orange' | 'white' | 'black';
+type ButtonSize = 'sm' | 'md' | 'lg';
+
+type ButtonProps = Omit<ButtonHTMLAttributes<HTMLButtonElement>, 'size'> & {
+  children: ReactNode;
+  variant?: ButtonVariant;
+  size?: ButtonSize;
+  loading?: boolean;
+};
 
 export function Button({
   children,
@@ -10,7 +20,7 @@ export function Button({
   disabled,
   type = 'button',
   ...props
-}) {
+}: ButtonProps) {
   const variantClasses = {
     yellow: 'bg-neo-yellow text-black hover:bg-yellow-300',
     green: 'bg-neo-green text-black hover:bg-emerald-400',
@@ -19,13 +29,13 @@ export function Button({
     orange: 'bg-neo-orange text-white hover:bg-orange-600',
     white: 'bg-white text-black hover:bg-slate-100',
     black: 'bg-black text-white hover:bg-zinc-800',
-  };
+  } satisfies Record<ButtonVariant, string>;
 
   const sizeClasses = {
     sm: 'px-3 py-1.5 text-sm',
     md: 'px-5 py-2.5 text-base font-bold',
     lg: 'px-8 py-4 text-lg font-black',
-  };
+  } satisfies Record<ButtonSize, string>;
 
   return (
     <button

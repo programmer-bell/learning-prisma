@@ -1,107 +1,99 @@
 'use server';
 
-import { prisma } from '@/lib/prisma';
+import { Prisma } from '@prisma/client';
 import { cookies } from 'next/headers';
 import { redirect } from 'next/navigation';
+import {
+  authenticateUser,
+  createUserSession as createSessionRecord,
+  getUserFromSession,
+  registerAccount,
+  revokeUserSession,
+} from '@/lib/auth-service';
+import {
+  SESSION_COOKIE_NAME,
+} from '@/lib/session';
+import { parseLoginForm, parseRegistrationForm } from '@/lib/validation';
 
-const SESSION_COOKIE_NAME = 'lws_auth_token';
+type AuthActionState = { success: false; error: string } | null;
 
-const MOCK_USER = {
-  id: 'user-1',
-  name: 'Sumit Saha',
-  email: 'sumit@learnwithsumit.com',
-};
+async function setSessionCookie(token: string, expiresAt: Date) {
+  const cookieStore = await cookies();
+  cookieStore.set(SESSION_COOKIE_NAME, token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    path: '/',
+    expires: expiresAt,
+  });
+}
 
 export async function getCurrentUser() {
   const cookieStore = await cookies();
   const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+  if (!token) return null;
 
-  try {
-    if (!token) {
-      throw new Error("Token not found");
-    }
-    const user = await prisma.user.findFirst({
-      where: { id: token }
-    })
-    return user;
-  } catch (err) {
-    console.log(err);
+  const user = await getUserFromSession(token);
+  if (!user) {
+    cookieStore.delete(SESSION_COOKIE_NAME);
     return null;
   }
 
-  return null;
+  return user;
 }
 
-export async function loginUser(prevState, formData) {
-  const email = formData.get('email');
-  const password = formData.get('password');
+export async function loginUser(
+  _prevState: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const fields = parseLoginForm(formData);
+  if ('error' in fields && fields.error) return { success: false, error: fields.error };
 
-  if (!email || !password) {
-    return { success: false, error: 'Email and password are required.' };
+  const user = await authenticateUser(fields.email, fields.password);
+  if (!user) {
+    return { success: false, error: 'Invalid email or password.' };
   }
 
-  try {
-    const user = await prisma.user.findFirst({
-      where: {
-        email,
-        password
-      }
-    })
-    if (!user) {
-      return { success: false, error: "Invalid email or password" }
-    }
-    const cookieStore = await cookies();
-    cookieStore.set({
-      name: SESSION_COOKIE_NAME,
-      value: user.id,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-    });
-  } catch (err) {
-    console.log(err);
-    return { success: false, error: err.message }
-  }
-
+  const session = await createSessionRecord(user.id);
+  await setSessionCookie(session.token, session.expiresAt);
   redirect('/dashboard');
 }
 
-export async function registerUser(prevState, formData) {
-  const name = formData.get('name');
-  const email = formData.get('email');
-  const password = formData.get('password');
-
-  if (!name || !email || !password) {
-    return { success: false, error: 'All fields are required.' };
-  }
+export async function registerUser(
+  _prevState: AuthActionState,
+  formData: FormData
+): Promise<AuthActionState> {
+  const fields = parseRegistrationForm(formData);
+  if ('error' in fields && fields.error) return { success: false, error: fields.error };
 
   try {
-    const user = await prisma.user.create({
-      data: {
-        name,
-        email,
-        password
-      }
-    })
-    const cookieStore = await cookies();
-    cookieStore.set({
-      name: SESSION_COOKIE_NAME,
-      value: user.id,
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      path: '/',
-      maxAge: 60 * 60 * 24 * 7, // 1 week
-    });
-  } catch (err) {
-    console.log(err)
-    return { success: false, error: "Registration failed." }
+    const user = await registerAccount(fields);
+    const session = await createSessionRecord(user.id);
+    await setSessionCookie(session.token, session.expiresAt);
+  } catch (error) {
+    if (
+      error instanceof Prisma.PrismaClientKnownRequestError &&
+      error.code === 'P2002'
+    ) {
+      return { success: false, error: 'An account with this email already exists.' };
+    }
+    return { success: false, error: 'Registration failed. Please try again.' };
   }
+
   redirect('/dashboard');
 }
 
 export async function logoutUser() {
   const cookieStore = await cookies();
-  cookieStore.delete(SESSION_COOKIE_NAME);
+  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
+
+  try {
+    if (token) {
+      await revokeUserSession(token);
+    }
+  } finally {
+    cookieStore.delete(SESSION_COOKIE_NAME);
+  }
+
   redirect('/');
 }

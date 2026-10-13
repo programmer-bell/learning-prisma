@@ -6,14 +6,19 @@ import { getCurrentUser } from '@/app/actions/auth';
 import { getNoteById, getTags } from '@/app/actions/notes';
 import { ArrowLeft } from 'lucide-react';
 
-export default async function NewNotePage(props) {
+type NewNotePageProps = {
+  searchParams: Promise<{ edit?: string | string[] }>;
+};
+
+export default async function NewNotePage({ searchParams }: NewNotePageProps) {
   const user = await getCurrentUser();
   if (!user) {
     redirect('/login');
   }
 
-  const searchParams = await props.searchParams;
-  const editId = searchParams.edit;
+  const params = await searchParams;
+  const editValue = params.edit;
+  const editId = Array.isArray(editValue) ? editValue[0] : editValue;
 
   let note = null;
   if (editId) {

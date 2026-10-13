@@ -1,4 +1,5 @@
 import { Space_Grotesk } from 'next/font/google';
+import type { ReactNode } from 'react';
 import './globals.css';
 
 const spaceGrotesk = Space_Grotesk({
@@ -18,7 +19,7 @@ export const metadata = {
   },
 };
 
-export default function RootLayout({ children }) {
+export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="en" className={`${spaceGrotesk.variable} h-full antialiased`}>
       <body className="min-h-full font-sans bg-neo-bg text-black selection:bg-neo-yellow selection:text-black">

@@ -1,5 +1,11 @@
-import React from 'react';
+import type { HTMLAttributes, ReactNode } from 'react';
 import { clsx } from 'clsx';
+
+type CardProps = HTMLAttributes<HTMLDivElement> & {
+  children: ReactNode;
+  bg?: string;
+  hasShadow?: boolean;
+};
 
 export function Card({
   children,
@@ -7,7 +13,7 @@ export function Card({
   bg = 'bg-white',
   hasShadow = true,
   ...props
-}) {
+}: CardProps) {
   return (
     <div
       className={clsx(

@@ -28,7 +28,8 @@ export function SearchBar({ defaultValue = '' }: SearchBarProps) {
       }
 
       startTransition(() => {
-        router.push(`${pathname}?${params.toString()}`);
+        const query = params.toString();
+        router.push(query ? `${pathname}?${query}` : pathname);
       });
     }, 300);
 
@@ -39,6 +40,7 @@ export function SearchBar({ defaultValue = '' }: SearchBarProps) {
     <div className="relative flex-1 w-full">
       <Input
         name="search"
+        aria-label="Search notes by title or content"
         placeholder="Search notes by title or content..."
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
